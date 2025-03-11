@@ -229,7 +229,7 @@ var whipJanus = function(janusConfig) {
 					type = mline[1];
 					continue;
 				}
-				if(type !== "audio" && type !== "video")
+				if(type !== "audio" && type !== "video" && type !== "application")
 					continue;
 				let mid = lines[i].match('a=mid:(.+)');
 				if(mid) {
@@ -237,7 +237,9 @@ var whipJanus = function(janusConfig) {
 						session.audioMid = mid[1];
 					else if(type === "video" && !session.videoMid)
 						session.videoMid = mid[1];
-					if(session.audioMid && session.videoMid)
+					else if (type === "application" && !session.applicationMid) 
+						session.applicationMid = mid[1]
+					if(session.audioMid && session.videoMid && session.applicationMid)
 						break;
 				}
 			}
@@ -425,6 +427,13 @@ var whipJanus = function(janusConfig) {
 					ssrc: Math.floor(Math.random() * max32),
 					rtcp_port: recipient.videoRtcpPort
 				});
+			}
+			if (!isNaN(recipient.dataPort) && recipient.dataPort > 0 && session.applicationMid) {
+				forward.body.streams.push({
+					mid: session.applicationMid,
+					port: recipient.dataPort,
+					ssrc: Math.floor(Math.random() * max32)
+				})
 			}
 		}
 		whip.debug("Sending forward request:", forward);
