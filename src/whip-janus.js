@@ -329,7 +329,8 @@ var whipJanus = function(janusConfig) {
 					delete that.config.janus.transactions[response["transaction"]];
 					handles[handle].publisher = data["id"];
 					// Should we RTP forward too?
-					if(recipient && recipient.host && (recipient.audioPort > 0 || recipient.videoPort > 0)) {
+					if (recipient && recipient.host
+						&& (recipient.audioPort > 0 || recipient.videoPort > 0 || recipient.dataPort > 0)) {
 						// RTP forward the publisher to the specified address
 						let forwardDetails = {
 							uuid: uuid,
